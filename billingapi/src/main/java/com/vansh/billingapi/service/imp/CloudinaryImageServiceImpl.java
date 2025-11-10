@@ -17,15 +17,22 @@ public class CloudinaryImageServiceImpl implements Cloudinaryimageservice {
 
     @Override
     public Map upload(MultipartFile file) {
-
         try {
-            Map data = this.cloudinary.uploader().upload(file.getBytes(), Map.of());
-
-            return data;
-
+            return this.cloudinary.uploader().upload(file.getBytes(), Map.of());
         } catch (IOException e) {
-            throw new RuntimeException("Image uploading fail!");
+            throw new RuntimeException("Image uploading fail!", e);
+        }
+    }
 
+    @Override
+    public Map delete(String publicId) {
+        try {
+            Map options = Map.of("resource_type", "image", "invalidate", true);
+            Map result = cloudinary.uploader().destroy(publicId, options);
+            System.out.println("delete publicId=" + publicId + " -> " + result);
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException("Image deletion failed", e);
         }
     }
 }

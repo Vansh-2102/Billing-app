@@ -5,37 +5,47 @@ import com.vansh.billingapi.io.CategoryResponse;
 import com.vansh.billingapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 public class Categorycontroller {
 
-    private  final CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse addCategory(@RequestBody CategoryRequest request){
-      return categoryService.add(request);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CategoryResponse> addCategory(
+            @RequestParam("name") String name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "bgColor", required = false) String bgColor,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+
+        CategoryRequest request = new CategoryRequest(name, description, bgColor);
+        CategoryResponse response = categoryService.add(request, image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public List<CategoryResponse> fetchCategories(){
-        return categoryService.read();
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+        List<CategoryResponse> categories = categoryService.read();
+        return ResponseEntity.ok(categories);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+
     @DeleteMapping("/{categoryId}")
-    public  void remove(@PathVariable String categoryId){
-        try{
-            categoryService.delete(categoryId);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());
-        }
+    public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable String categoryId) {
+        categoryService.delete(categoryId);
+        return ResponseEntity.ok(Map.of(
+                "message", "Category deleted successfully",
+                "categoryId", categoryId
+        ));
     }
 
 }

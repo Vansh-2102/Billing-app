@@ -2,11 +2,7 @@ package com.vansh.billingapi.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -20,16 +16,24 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String categoryId;
-    @Column(unique = true)
+
     private String name;
+
+    @Column(length = 2000)
     private String description;
+
     private String bgColor;
+
+    // New: store Cloudinary image URL and public id
+    @Column(length = 2000)
     private String imgUrl;
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Timestamp createdAt;
-    @UpdateTimestamp
-    private Timestamp updatedAt;
+
+    private String imagePublicId;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
