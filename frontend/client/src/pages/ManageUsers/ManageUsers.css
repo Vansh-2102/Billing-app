@@ -1,0 +1,60 @@
+
+html, body, #root {
+  height: 100%;
+}
+
+.mc-page {
+  min-height: calc(100vh - 64px); /* adjust 64px to your navbar height if needed */
+  background: #212426 !important;
+  padding: 20px 28px;
+  box-sizing: border-box;
+  color: #e6e6e6;
+}
+
+
+.mc-inner {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  align-items: stretch;
+}
+
+/* left and right panels */
+.mc-left, .mc-right {
+  background: #2e3334;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: inset 0 1px rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+/* widths */
+.mc-left { flex: 0.7; min-height: 100%; }
+.mc-right { flex: 0.3; min-height: 100%; }
+
+/* small header style */
+.mc-left > h3, .mc-right > h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  text-transform: lowercase;
+  color: #dfe6e9;
+  padding-left: 6px;
+}
+
+/* subtle inner vertical divider look on right panel — mimic screenshot */
+.mc-right {
+  border-left: 1px solid rgba(255,255,255,0.02);
+}
+
+/* make right column scrollable if content grows */
+.mc-right { overflow-y: auto; }
+
+/* responsive: stack columns on small screens */
+@media (max-width: 900px) {
+  .mc-inner { flex-direction: column; }
+  .mc-left, .mc-right { width: 100%; }
+}
