@@ -4,6 +4,7 @@ import com.vansh.billingapi.entity.CategoryEntity;
 import com.vansh.billingapi.io.CategoryRequest;
 import com.vansh.billingapi.io.CategoryResponse;
 import com.vansh.billingapi.repository.CategoryRepository;
+import com.vansh.billingapi.repository.ItemRepository;
 import com.vansh.billingapi.service.CategoryService;
 import com.vansh.billingapi.service.Cloudinaryimageservice;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final Cloudinaryimageservice cloudinaryimageservice;
+    private final ItemRepository itemRepository;
 
     @Override
     @Transactional
@@ -89,6 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private CategoryResponse convertToResponse(CategoryEntity newCategory) {
+        Integer itemCount = itemRepository.countByCategory_Id(newCategory.getId());
         return CategoryResponse.builder()
                 .categoryId(newCategory.getCategoryId())
                 .name(newCategory.getName())
@@ -97,6 +99,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .imgUrl(newCategory.getImgUrl())
                 .createdAt(newCategory.getCreatedAt())
                 .updateAt(newCategory.getUpdatedAt())
+                .items(itemCount)
                 .build();
     }
 }

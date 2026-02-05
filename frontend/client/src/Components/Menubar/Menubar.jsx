@@ -1,8 +1,19 @@
-import { Link } from "react-router-dom"; // ✅ Import Link here
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../../Context/AppContext";
 import { assets } from '../../assets/assets';
 import './Menubar.css';
 
 const Menubar = () => {
+    const { auth } = useContext(AppContext);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        navigate("/login");
+    };
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-2">
             <a className="navbar-brand" href="#">
@@ -27,16 +38,26 @@ const Menubar = () => {
                     <li className="nav-item">
                         <Link className="nav-link" to="/explore">Explore</Link>
                     </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/items">Manage Items</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/category">Manage Categories</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/users">Manage Users</Link>
-                    </li>
+                    {auth.role === "ADMIN" && (
+                        <>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/items">Manage Items</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/category">Manage Categories</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/users">Manage Users</Link>
+                            </li>
+                        </>
+                    )}
                 </ul>
+                <div className="d-flex align-items-center">
+                    <span className="text-light me-3">Role: {auth.role || "N/A"}</span>
+                    <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
             </div>
         </nav>
     );

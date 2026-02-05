@@ -16,4 +16,5 @@ public class CategoryResponse {
     private String imgUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
+    private Integer items;
 }

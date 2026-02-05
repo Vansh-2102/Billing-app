@@ -30,13 +30,14 @@ const CategoryForms = () => {
     // note: async because we await addCategory
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        
 
         if (!image) {
             toast.error("Select image for category");
             setLoading(false);
             return;
         }
+        setLoading(true);
 
         const formData = new FormData();
         formData.append("name", data.name);
@@ -62,7 +63,8 @@ const CategoryForms = () => {
             }
         } catch (err) {
             console.error(err);
-            toast.error("Error adding category");
+            const errorMessage = err.response?.data?.message || err.message || "Error adding category";
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }

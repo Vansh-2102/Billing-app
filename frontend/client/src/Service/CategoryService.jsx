@@ -1,14 +1,14 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-export const addCategory = async(category)=>{
-  return  await axios.post('http://localhost:8080/api/v1.0/categories', category);
+export const addCategory = (category) => {
+  // Don't set Content-Type header - let browser set it with boundary for FormData
+  return axiosInstance.post("/categories/admin", category);
+};
 
-}
+export const deleteCategory = (categoryId) => {
+  return axiosInstance.delete(`/categories/admin/${categoryId}`);
+};
 
-export const deleteCategory = async (categoryId) => {
-    return await axios.delete(`http://localhost:8080/api/v1.0/categories/${categoryId}`);
-}
-
-export const fetchCategories = async () => {
-    return await axios.get('http://localhost:8080/api/v1.0/categories');     
-}
+export const fetchCategories = () => {
+  return axiosInstance.get("/categories");
+};
