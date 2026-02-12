@@ -11,6 +11,17 @@ export const AppContextProvider = (props) => {
     token: localStorage.getItem("token"), // 👈 restore on refresh
     role: localStorage.getItem("role"),
   });
+  const [cartItems, setCartItems] = useState([]);
+
+const addToCart = (item) => {
+  const existingItem = cartItems.find(carfItem => cartItems,name === item.name);
+  if(existingItem){
+    setCartItems(cartItems.map(cartItem => cartItem.name== item.name ? {...cartItem, quantity: cartItem.quantity+1}: cartItem));
+  } else {
+    setCartItems([...cartItems, {...item, quantity:1}]);
+  }
+}
+
 
   // ✅ Load categories and items ONLY when token is available
   useEffect(() => {
@@ -45,6 +56,8 @@ export const AppContextProvider = (props) => {
     setItems,
     auth,
     setAuthData,
+    addToCart,
+    cartItems,
   };
 
   return (
