@@ -1,0 +1,22 @@
+.cart-summary-container {
+    height: 100%;
+    background: #1f2428;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.customer-section {
+    background: #232a30;
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.summary-footer {
+    background: #232a30;
+}

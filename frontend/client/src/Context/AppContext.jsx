@@ -8,22 +8,78 @@ export const AppContextProvider = (props) => {
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
   const [auth, setAuth] = useState({
-    token: localStorage.getItem("token"), // 👈 restore on refresh
+    token: localStorage.getItem("token"),
     role: localStorage.getItem("role"),
   });
   const [cartItems, setCartItems] = useState([]);
 
-const addToCart = (item) => {
-  const existingItem = cartItems.find(carfItem => cartItems,name === item.name);
-  if(existingItem){
-    setCartItems(cartItems.map(cartItem => cartItem.name== item.name ? {...cartItem, quantity: cartItem.quantity+1}: cartItem));
-  } else {
-    setCartItems([...cartItems, {...item, quantity:1}]);
-  }
-}
+  // ✅ ADD TO CART
+  const addToCart = (item) => {
+  setCartItems(prevCart => {
+    const existingItem = prevCart.find(
+      cartItem => cartItem.name === item.name
+    );
+
+    const priceValue = item.price ?? item.print ?? 0;
+
+    if (existingItem) {
+      return prevCart.map(cartItem =>
+        cartItem.name === item.name
+          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          : cartItem
+      );
+    } else {
+      return [
+        ...prevCart,
+        {
+          name: item.name,
+          price: Number(priceValue),
+          quantity: 1
+        }
+      ];
+    }
+  });
+};
 
 
-  // ✅ Load categories and items ONLY when token is available
+
+  // ➕ INCREASE QUANTITY
+  const increaseQuantity = (name) => {
+    setCartItems(prevCart =>
+      prevCart.map(item =>
+        item.name === name
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  // ➖ DECREASE QUANTITY
+  const decreaseQuantity = (name) => {
+    setCartItems(prevCart =>
+      prevCart
+        .map(item =>
+          item.name === name
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter(item => item.quantity > 0)
+    );
+  };
+
+  // 🗑 REMOVE ITEM
+  const removeItem = (name) => {
+    setCartItems(prevCart =>
+      prevCart.filter(item => item.name !== name)
+    );
+  };
+
+  // 🧾 CLEAR CART
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  // ✅ Load categories and items when token exists
   useEffect(() => {
     if (!auth.token) return;
 
@@ -41,13 +97,15 @@ const addToCart = (item) => {
     }
 
     loadData();
-  }, [auth.token]); // 👈 IMPORTANT dependency
+  }, [auth.token]);
 
   const setAuthData = (token, role) => {
     setAuth({ token, role });
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
   };
+
+  
 
   const contextValue = {
     categories,
@@ -56,8 +114,12 @@ const addToCart = (item) => {
     setItems,
     auth,
     setAuthData,
-    addToCart,
     cartItems,
+    addToCart,
+    increaseQuantity,
+    decreaseQuantity,
+    removeItem,
+    clearCart,
   };
 
   return (

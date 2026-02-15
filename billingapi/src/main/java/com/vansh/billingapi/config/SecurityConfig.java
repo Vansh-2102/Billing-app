@@ -40,20 +40,23 @@ public class SecurityConfig {
 
                         // USER + ADMIN
                         .requestMatchers(
-                                "/categories",
-                                "/items",
-                                "/me"
+                                "/api/v1.0/categories",
+                                "/api/v1.0/items",
+                                "/api/v1.0/me",
+                                "/api/v1.0/orders",
+                                "/api/v1.0/payments"
                         ).hasAnyRole("USER", "ADMIN")
 
                         // ADMIN only
                         .requestMatchers(
-                                "/categories/admin",
-                                "/categories/admin/**",
-                                "/admin/**"
+                                "/api/v1.0/categories/admin",
+                                "/api/v1.0/categories/admin/**",
+                                "/api/v1.0/admin/**"
                         ).hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
+
 
 
 

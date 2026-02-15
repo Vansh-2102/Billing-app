@@ -1,48 +1,62 @@
 import { useContext } from 'react';
 import './Cartitems.css';
 import { AppContext } from '../Context/AppContext';
-import Item from '../Components/Item/Item';
 
-const Cartitems =() => {
-    const {cartItems} = useContext(AppContext);
-    console.log('From cart items component', cartItems);
-    return(
-        <div className="p-3 h-100 overflow-y-auto">
+const Cartitems = () => {
+    const {
+        cartItems,
+        increaseQuantity,
+        decreaseQuantity,
+        removeItem
+    } = useContext(AppContext);
+
+    return (
+        <div className="cart-items-list">
             {cartItems.length === 0 ? (
-                <p className="text-light">
-                    Your cart is empty.
-                </p>
+                <p className="text-light">Your cart is empty.</p>
             ) : (
-                <div className='cart-items-list'>
-                    {cartItems.map((item, index) => (
-                        <div key={index} className="cart-item mb-3 p-3 bg-dark round">
-                            <div className="d-flex justfy-content-between align-items-center mb-2">
-                                <h6 className="mb-0 text-light">{item.name}</h6>
-                                <p className="mb-0 text-light">
-                                    ₹{(item.price*item.quantity).toFixed(2)}
-                                </p>
-                            </div>
-                             <div className="d-flex justify-content-between align-item-center">
-                                <div className="d-flex align-items center gap-2">
-                                    <button className="btn btn-danger btn-sm"
-                                    disabled={item.quantity === 1}>
-                                        <i className="bi bi-dash"></i>
-                                    </button>
-                                    <span className="text-light">{item.quantity}</span>
-                                    <button className="btn btn-primary btn-sm">
-                                        <i className="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                                   <button className="btn btn-danger btn-sm"style={{width: "auto"}}>
-                                    <i className="bi bi-trash"></i>
-                                   </button>
-                             </div>
+                cartItems.map((item, index) => (
+                    <div key={index} className="cart-item">
+                        
+                        <div className="item-header">
+                            <span>{item.name}</span>
+                            <span>
+                                ₹{(item.price * item.quantity).toFixed(2)}
+                            </span>
                         </div>
-                    ))}
-                </div>
+
+                        <div className="item-controls">
+                            <div className="qty-controls">
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => decreaseQuantity(item.name)}
+                                    disabled={item.quantity === 1}
+                                >
+                                    -
+                                </button>
+
+                                <span>{item.quantity}</span>
+
+                                <button
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => increaseQuantity(item.name)}
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => removeItem(item.name)}
+                            >
+                                🗑
+                            </button>
+                        </div>
+                    </div>
+                ))
             )}
         </div>
-    )
-}
+    );
+};
 
 export default Cartitems;
