@@ -7,6 +7,7 @@ import ManageItems from './pages/ManageItems/ManageItems.jsx';
 import ManageUsers from './pages/ManageUsers/ManageUsers.jsx';
 import Login from './pages/Login/Login.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
+import OrderHistory from './pages/OrderHistory/OrderHistory.jsx';
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/items" element={<ManageItems />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/orders" element={<OrderHistory />} />
         <Route path="/" element={<Dashboard />} />
       </Routes>
     </div>
