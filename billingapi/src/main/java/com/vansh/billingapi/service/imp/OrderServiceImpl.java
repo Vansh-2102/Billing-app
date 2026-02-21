@@ -6,8 +6,12 @@ import com.vansh.billingapi.io.*;
 import com.vansh.billingapi.repository.OrderEntityRepository;
 import com.vansh.billingapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,20 +49,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse convertToResponse(OrderEntity newOrder) {
-          return OrderResponse.builder()
-                 .orderId(newOrder.getOrderId())
-                 .customerName(newOrder.getCustomerName())
-                 .phoneNumber(newOrder.getPhoneNumber())
-                 .subtotal(newOrder.getSubtotal())
-                 .tax(newOrder.getTax())
-                 .grandTotal(newOrder.getGrandTotal())
-                 .paymentMethod(newOrder.getPaymentMethod())
-                 .items(newOrder.getItems().stream()
-                         .map(this::convertToOrderItemResponse)
-                          .collect(Collectors.toList()))
-                 .paymentDetails(newOrder.getPaymentDetails())
-                 .createdAt(newOrder.getCreatedAt())
-                 .build();
+        return OrderResponse.builder()
+                .orderId(newOrder.getOrderId())
+                .customerName(newOrder.getCustomerName())
+                .phoneNumber(newOrder.getPhoneNumber())
+                .subtotal(newOrder.getSubtotal())
+                .tax(newOrder.getTax())
+                .grandTotal(newOrder.getGrandTotal())
+                .paymentMethod(newOrder.getPaymentMethod())
+                .items(newOrder.getItems().stream()
+                        .map(this::convertToOrderItemResponse)
+                        .collect(Collectors.toList()))
+                .paymentDetails(newOrder.getPaymentDetails())
+                .createdAt(newOrder.getCreatedAt())
+                .build();
     }
 
     private OrderResponse.OrderItemResponse convertToOrderItemResponse(OrderItemEntity orderItemEntity) {
@@ -85,12 +89,16 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(String orderId) {
         OrderEntity existingOrder = orderEntityRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-            orderEntityRepository.delete(existingOrder);
+        orderEntityRepository.delete(existingOrder);
     }
 
     @Override
     public List<OrderResponse> getLatestOrders() {
-        return orderEntityRepository.findAllByOrderByCreatedAtDesc()
+
+        Pageable pageable = PageRequest.of(0, 5);
+
+        return orderEntityRepository
+                .findAllByOrderByCreatedAtDesc(pageable)
                 .stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -102,8 +110,8 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if(!verifyRazorpaySignature(request.getRazorpayOrderId(),
-            request.getRazorpayPaymentId(),
-            request.getRazorpaySignature())){
+                request.getRazorpayPaymentId(),
+                request.getRazorpaySignature())){
             throw new RuntimeException("Payment verification failed");
         }
 
@@ -117,7 +125,45 @@ public class OrderServiceImpl implements OrderService {
         return convertToResponse(existingOrder);
     }
 
+    @Override
+    public Double sumSalesByDate(LocalDate date) {
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(23, 59, 59);
+
+        return orderEntityRepository.sumSalesBetween(
+                start,
+                end,
+                PaymentDetails.PaymentStatus.COMPLETED
+        );
+    }
+
+    @Override
+    public Long countByOrderDate(LocalDate date) {
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(23, 59, 59);
+
+        return orderEntityRepository.countOrdersBetween(
+                start,
+                end,
+                PaymentDetails.PaymentStatus.COMPLETED
+        );
+    }
+
+    @Override
+    public List<OrderResponse> findrecentOrders() {
+
+        Pageable pageable = PageRequest.of(0, 5);
+
+        return orderEntityRepository
+                .findAllByOrderByCreatedAtDesc(pageable)
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     private boolean verifyRazorpaySignature(String razorpayOrderId, String razorpayPaymentId, String razorpaySignature) {
-      return true;
+        return true;
     }
 }

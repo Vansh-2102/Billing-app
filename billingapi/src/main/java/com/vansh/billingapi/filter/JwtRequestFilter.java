@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -31,14 +30,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // ✅ VERY IMPORTANT: Allow CORS preflight request
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
 
         String jwt = null;
         String username = null;
 
-        // ✅ Extract JWT
+        // ✅ Extract JWT from header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
+
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (Exception e) {
@@ -48,7 +54,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
-        // ✅ Authenticate user
+        // ✅ Authenticate user if not already authenticated
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -57,15 +63,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
 
-                // 🔥 Extract roles directly from JWT
-
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
-                                userDetails.getAuthorities()   // 🔥 CORRECT
+                                userDetails.getAuthorities()
                         );
-
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
@@ -73,11 +76,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
         }
 
-
-
+        // ✅ Continue filter chain
         filterChain.doFilter(request, response);
     }
 }

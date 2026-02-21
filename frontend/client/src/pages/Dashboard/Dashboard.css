@@ -1,0 +1,156 @@
+/* ===== GLOBAL WRAPPER ===== */
+
+.dashboard-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #111827);
+    padding: 30px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #f1f5f9;
+}
+
+/* ===== TOP STAT CARDS ===== */
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #1e293b;
+    padding: 20px 25px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-icon {
+    font-size: 28px;
+    background: #0f766e;
+    color: #fff;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-content h3 {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 5px;
+}
+
+.stat-content p {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f8fafc;
+}
+
+/* ===== RECENT ORDERS CARD ===== */
+
+.recent-orders-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.recent-orders-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* ===== TABLE ===== */
+
+.orders-table-container {
+    overflow-x: auto;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table thead {
+    background-color: #334155;
+}
+
+.order-table th {
+    text-align: left;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+.order-table td {
+    padding: 12px;
+    font-size: 14px;
+    color: #e2e8f0;
+    border-bottom: 1px solid #334155;
+}
+
+.order-table tbody tr:hover {
+    background-color: #2a3444;
+}
+
+/* ===== PAYMENT BADGES ===== */
+
+.payment-method {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.payment-method.cash {
+    background-color: #065f46;
+    color: #10b981;
+}
+
+.payment-method.upi {
+    background-color: #1e3a8a;
+    color: #60a5fa;
+}
+
+/* ===== STATUS BADGE ===== */
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.completed {
+    background-color: #064e3b;
+    color: #34d399;
+}
+
+.status-badge.pending {
+    background-color: #78350f;
+    color: #facc15;
+}
+
+/* ===== LOADING & ERROR ===== */
+
+.loading,
+.error {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 18px;
+    color: #cbd5e1;
+}
