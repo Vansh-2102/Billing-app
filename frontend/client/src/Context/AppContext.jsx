@@ -4,82 +4,41 @@ import { fetchItems } from "../Service/ItemService";
 
 export const AppContext = createContext(null);
 
-export const AppContextProvider = (props) => {
+export const AppContextProvider = ({ children }) => {
+
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+
   const [auth, setAuth] = useState({
     token: localStorage.getItem("token"),
     role: localStorage.getItem("role"),
   });
-  const [cartItems, setCartItems] = useState([]);
 
-  // ✅ ADD TO CART
-  const addToCart = (item) => {
-  setCartItems(prevCart => {
-    const existingItem = prevCart.find(
-      cartItem => cartItem.name === item.name
-    );
-
-    const priceValue = item.price ?? item.print ?? 0;
-
-    if (existingItem) {
-      return prevCart.map(cartItem =>
-        cartItem.name === item.name
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      );
-    } else {
-      return [
-        ...prevCart,
-        {
-          name: item.name,
-          price: Number(priceValue),
-          quantity: 1
-        }
-      ];
-    }
-  });
-};
-
-
-
-  // ➕ INCREASE QUANTITY
-  const increaseQuantity = (name) => {
-    setCartItems(prevCart =>
-      prevCart.map(item =>
-        item.name === name
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
+  // 🔐 LOGIN FUNCTION
+  const setAuthData = (token, role) => {
+    setAuth({ token, role });
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
   };
 
-  // ➖ DECREASE QUANTITY
-  const decreaseQuantity = (name) => {
-    setCartItems(prevCart =>
-      prevCart
-        .map(item =>
-          item.name === name
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter(item => item.quantity > 0)
-    );
-  };
+  // 🔓 LOGOUT FUNCTION (VERY IMPORTANT FIX)
+  const logout = () => {
+    setAuth({
+      token: null,
+      role: null
+    });
 
-  // 🗑 REMOVE ITEM
-  const removeItem = (name) => {
-    setCartItems(prevCart =>
-      prevCart.filter(item => item.name !== name)
-    );
-  };
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
 
-  // 🧾 CLEAR CART
-  const clearCart = () => {
+    // clear sensitive data
+    setCategories([]);
+    setItems([]);
     setCartItems([]);
   };
 
-  // ✅ Load categories and items when token exists
+  // ✅ LOAD DATA ONLY IF LOGGED IN
   useEffect(() => {
     if (!auth.token) return;
 
@@ -89,8 +48,10 @@ export const AppContextProvider = (props) => {
           fetchCategories(),
           fetchItems()
         ]);
+
         setCategories(categoriesResponse.data);
         setItems(itemsResponse.data);
+
       } catch (error) {
         console.error("Failed to load data", error);
       }
@@ -99,32 +60,88 @@ export const AppContextProvider = (props) => {
     loadData();
   }, [auth.token]);
 
-  const setAuthData = (token, role) => {
-    setAuth({ token, role });
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
-  };
-
-  
-
   const contextValue = {
     categories,
     setCategories,
     items,
     setItems,
-    auth,
-    setAuthData,
     cartItems,
     addToCart,
     increaseQuantity,
     decreaseQuantity,
     removeItem,
     clearCart,
+    auth,
+    setAuthData,
+    logout
   };
 
   return (
     <AppContext.Provider value={contextValue}>
-      {props.children}
+      {children}
     </AppContext.Provider>
   );
+
+  // -----------------------------
+  // CART FUNCTIONS
+  // -----------------------------
+
+  function addToCart(item) {
+    setCartItems(prevCart => {
+      const existingItem = prevCart.find(
+        cartItem => cartItem.name === item.name
+      );
+
+      const priceValue = item.price ?? 0;
+
+      if (existingItem) {
+        return prevCart.map(cartItem =>
+          cartItem.name === item.name
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        return [
+          ...prevCart,
+          {
+            name: item.name,
+            price: Number(priceValue),
+            quantity: 1
+          }
+        ];
+      }
+    });
+  }
+
+  function increaseQuantity(name) {
+    setCartItems(prevCart =>
+      prevCart.map(item =>
+        item.name === name
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  }
+
+  function decreaseQuantity(name) {
+    setCartItems(prevCart =>
+      prevCart
+        .map(item =>
+          item.name === name
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter(item => item.quantity > 0)
+    );
+  }
+
+  function removeItem(name) {
+    setCartItems(prevCart =>
+      prevCart.filter(item => item.name !== name)
+    );
+  }
+
+  function clearCart() {
+    setCartItems([]);
+  }
 };

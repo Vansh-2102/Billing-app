@@ -1,0 +1,75 @@
+/* Full page background */
+.not-found-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Card box */
+.not-found-content {
+    background: rgba(30, 41, 59, 0.85);
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    max-width: 500px;
+    width: 100%;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* 404 big text */
+.not-found-title {
+    font-size: 120px;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(90deg, #facc15, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle */
+.not-found-subtitle {
+    font-size: 26px;
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+/* Message */
+.not-found-message {
+    font-size: 16px;
+    color: #cbd5e1;
+    margin-bottom: 30px;
+}
+
+/* Button */
+.not-found-button {
+    padding: 12px 30px;
+    background: linear-gradient(90deg, #facc15, #f97316);
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.not-found-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.4);
+}
+
+/* Smooth fade animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

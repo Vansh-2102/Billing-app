@@ -129,7 +129,7 @@ const ItemForm = () => {
                                     >
                                         <option value="">--SELECT CATEGORY--</option>
                                         {categories.map((category) => (
-                                            <option key={category.categoryId} value={category.categoryId}>
+                                            <option key={category.categoryId} value={category.categoryId} required>
                                                 {category.name}
                                             </option>
                                         ))}

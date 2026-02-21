@@ -111,6 +111,7 @@ const CategoryForms = () => {
                                     placeholder="Category Name"
                                     onChange={onChangeHandler}
                                     value={data.name}
+                                    required
                                 />
                             </div>
 
