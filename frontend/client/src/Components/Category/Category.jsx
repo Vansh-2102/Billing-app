@@ -1,6 +1,13 @@
 import './Category.css';
 
-const Category = ({ categoryName, imgUrl, numberOfItems, bgColor, isSelected, onClick }) => {
+const Category = ({
+  categoryName,
+  imgUrl,
+  numberOfItems,
+  bgColor,
+  isSelected,
+  onClick
+}) => {
   return (
     <div
       className="d-flex align-items-center p-3 rounded gap-1 position-relative category-hover"
@@ -13,11 +20,11 @@ const Category = ({ categoryName, imgUrl, numberOfItems, bgColor, isSelected, on
 
       <div>
         <h6 className="text-white mb-0">{categoryName}</h6>
-        <p className="text-white mb-0">{numberOfItems > 0 && (
-  <p>
-    {numberOfItems} {numberOfItems === 1 ? "item" : "items"}
-  </p>
-)} items</p>
+        <p className="text-white mb-0">
+          {numberOfItems > 0
+            ? `${numberOfItems} ${numberOfItems === 1 ? "item" : "items"}`
+            : "No items"}
+        </p>
       </div>
 
       {isSelected && <div className="active-category"></div>}
