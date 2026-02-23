@@ -12,14 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1.0/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -29,15 +27,11 @@ public class AuthController {
     private final AppUserDetailsService appUserDetailsService;
     private final UserService userService;
 
-    // ===============================
-    // LOGIN
-    // ===============================
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
 
-        // ✅ Authenticate user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         email,
@@ -45,33 +39,21 @@ public class AuthController {
                 )
         );
 
-        // ✅ Load UserDetails
         UserDetails userDetails =
                 appUserDetailsService.loadUserByUsername(email);
 
-        // ✅ FIX: generate token WITH roles
         String jwtToken = jwtUtil.generateToken(userDetails);
 
         String role = userService.getUserRole(email);
 
-        return new AuthResponse(
-                email,
-                jwtToken,
-                role
-        );
+        return new AuthResponse(email, jwtToken, role);
     }
 
-    // ===============================
-    // PASSWORD ENCODER (UTILITY)
-    // ===============================
     @PostMapping("/encode")
     public String encodePassword(@RequestBody Map<String, String> request) {
         return passwordEncoder.encode(request.get("password"));
     }
 
-    // ===============================
-    // DEBUG: Check current user role
-    // ===============================
     @GetMapping("/me")
     public Map<String, Object> getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
