@@ -1,8 +1,7 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copy only backend files
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
