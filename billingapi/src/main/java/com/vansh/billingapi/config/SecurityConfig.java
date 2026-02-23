@@ -35,38 +35,32 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // 🔥 Enable CORS properly
                 .cors(Customizer.withDefaults())
-
-                // Disable CSRF for REST APIs
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // 🔥 Allow preflight request
+                        // Allow preflight requests
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Public endpoints
-                        .requestMatchers("/login", "/encode").permitAll()
+                        // ✅ Correct public endpoints
+                        .requestMatchers("/api/v1.0/login", "/api/v1.0/encode").permitAll()
 
-                        // Protected endpoints
+                        // All other API endpoints require authentication
                         .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
 
                         .anyRequest().authenticated()
                 )
 
-                // Stateless session
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Add JWT filter
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // ✅ Correct CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
