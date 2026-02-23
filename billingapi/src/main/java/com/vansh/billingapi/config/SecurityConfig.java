@@ -5,6 +5,7 @@ import com.vansh.billingapi.service.imp.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,15 +42,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Allow preflight requests
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // ✅ Correct public endpoints
-                        .requestMatchers("/api/v1.0/login", "/api/v1.0/encode").permitAll()
+                        // 🔥 PUBLIC AUTH ENDPOINTS
+                        .requestMatchers("/api/v1.0/auth/**").permitAll()
 
-                        // All other API endpoints require authentication
+                        // 🔐 SECURED API ENDPOINTS
                         .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
 
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 .sessionManagement(session ->
@@ -61,6 +62,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ✅ CORS CONFIG
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
@@ -78,7 +80,9 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
         source.registerCorsConfiguration("/**", config);
 
         return source;
@@ -91,9 +95,13 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider();
+
         provider.setUserDetailsService(appUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
+
         return new ProviderManager(provider);
     }
 }

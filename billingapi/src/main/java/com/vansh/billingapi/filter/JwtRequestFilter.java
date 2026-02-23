@@ -30,7 +30,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // ✅ VERY IMPORTANT: Allow CORS preflight request
+        String path = request.getServletPath();
+
+        // 🔥 Skip public auth endpoints
+        if (path.startsWith("/api/v1.0/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Allow OPTIONS requests
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
@@ -41,8 +49,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
         String username = null;
 
-        // ✅ Extract JWT from header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
             jwt = authHeader.substring(7);
 
             try {
@@ -54,7 +62,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
-        // ✅ Authenticate user if not already authenticated
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -71,14 +78,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         );
 
                 authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
                 );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
             }
         }
 
-        // ✅ Continue filter chain
         filterChain.doFilter(request, response);
     }
 }
