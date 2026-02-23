@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import './Displayitems.css';
+import "./DisplayItems.css";
 import Item from '../Components/Item/Item';
 import SearchBox from '../Components/SearchBox/SearchBox';
 import { AppContext } from '../Context/AppContext';
