@@ -1,8 +1,7 @@
-// axiosInstance.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api/v1.0",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -10,10 +9,11 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  // Don't set Content-Type for FormData - let browser set it with boundary
+
   if (config.data instanceof FormData) {
-    delete config.headers['Content-Type'];
+    delete config.headers["Content-Type"];
   }
+
   return config;
 });
 
