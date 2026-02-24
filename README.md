@@ -102,5 +102,9 @@ https://billing-app-aj2j.onrender.com
 <img width="1916" height="1022" alt="image" src="https://github.com/user-attachments/assets/b59a1211-eac1-4371-b72d-21fd822172b5" />
 <img width="1903" height="1033" alt="image" src="https://github.com/user-attachments/assets/a40e7647-79ab-41c8-a128-408acf636bd6" />
 
+## 🔑 Demo Credentials
 
+| Role  | Email                | Password |
+|-------|----------------------|----------|
+| ADMIN | bushan@example.com   | 123456   |
 
