@@ -2,7 +2,7 @@ import { useContext, useRef } from "react";
 import { AppContext } from "../Context/AppContext";
 import { toast } from "react-toastify";
 
-import { createOrder, deleteOrder } from "../Service/OrderService";
+import { createOrder } from "../Service/OrderService";
 import { createRazorpayOrder, verifyPayment } from "../Service/PaymentService";
 import AppConstants from "../util/constants";
 
@@ -11,11 +11,13 @@ import "./CartSummary.css";
 const CartSummary = ({
   customerName,
   mobileNumber,
+  setCustomerName,
+  setMobileNumber,
   orderDetails,
   setOrderDetails,
   setShowPopup,
 }) => {
-  const { cartItems } = useContext(AppContext);
+  const { cartItems, clearCart } = useContext(AppContext);
 
   const cartRef = useRef(cartItems);
   cartRef.current = cartItems;
@@ -141,7 +143,16 @@ const CartSummary = ({
     if (!orderDetails)
       return toast.error("Complete payment first");
 
+    // Show receipt popup
     setShowPopup(true);
+  };
+
+  // 🔥 THIS FUNCTION WILL BE CALLED FROM RECEIPT CLOSE
+  const resetCartAfterReceipt = () => {
+    clearCart();
+    setOrderDetails(null);
+    setCustomerName("");
+    setMobileNumber("");
   };
 
   return (
