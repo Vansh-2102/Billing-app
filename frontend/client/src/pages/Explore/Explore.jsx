@@ -10,7 +10,7 @@ import CartItems from "../../Cartitems/Cartitems";
 import CartSummary from "../../CartSummary/CartSummary";
 
 const Explore = () => {
-  const { categories, items } = useContext(AppContext);
+  const { categories, items, clearCart } = useContext(AppContext);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -90,7 +90,10 @@ const Explore = () => {
           }}
           onClose={() => {
             setShowPopup(false);
-            setOrderDetails(null);
+            clearCart();                // ✅ clear cart
+            setOrderDetails(null);      // ✅ reset order
+            setCustomerName("");        // ✅ reset name
+            setMobileNumber("");        // ✅ reset phone
           }}
           onPrint={handlePrintReceipt}
         />

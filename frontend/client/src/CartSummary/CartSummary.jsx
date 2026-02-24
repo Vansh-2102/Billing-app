@@ -147,13 +147,7 @@ const CartSummary = ({
     setShowPopup(true);
   };
 
-  // 🔥 THIS FUNCTION WILL BE CALLED FROM RECEIPT CLOSE
-  const resetCartAfterReceipt = () => {
-    clearCart();
-    setOrderDetails(null);
-    setCustomerName("");
-    setMobileNumber("");
-  };
+ 
 
   return (
     <div className="summary-footer p-3 border-top">
