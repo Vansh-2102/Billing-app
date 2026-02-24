@@ -95,31 +95,8 @@ https://billing-app-aj2j.onrender.com
 ---
 ### 📂 Project Structure
 
-Billing-app/
-│
-├── backend/
-│   ├── src/main/java/com/vansh/billingapi/
-│   │   ├── config/          # Security configuration (JWT, CORS)
-│   │   ├── controller/      # REST Controllers
-│   │   ├── service/         # Business logic layer
-│   │   ├── repository/      # JPA repositories
-│   │   ├── filter/          # JWT request filter
-│   │   ├── util/            # Utility classes (JWT, helpers)
-│   │   └── io/              # DTO classes
-│   └── resources/
-│       └── application.properties
-│
-├── frontend/
-│   ├── src/
-│   │   ├── Components/      # Reusable UI components
-│   │   ├── Context/         # Global state management
-│   │   ├── Service/         # API service layer
-│   │   ├── Pages/           # Main pages
-│   │   ├── util/            # Constants & helpers
-│   │   └── main.jsx
-│   └── vite.config.js
-│
-└── README.md
+<img width="677" height="622" alt="image" src="https://github.com/user-attachments/assets/3fb3cbaa-33d5-4558-88c0-a077c1edb4d0" />
+
 
 <img width="1898" height="1034" alt="image" src="https://github.com/user-attachments/assets/dff7cb7a-97c2-4fba-ae35-a320028ad157" />
 <img width="1916" height="1022" alt="image" src="https://github.com/user-attachments/assets/b59a1211-eac1-4371-b72d-21fd822172b5" />
